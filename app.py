@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 from google import genai
 
@@ -72,7 +73,15 @@ if st.button("✨ Descubrir mis gafas", type="primary"):
     try:
         cliente = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
         with st.spinner("Consultando al oráculo de las gafas... 🔮"):
-            respuesta = cliente.models.generate_content(model=MODELO, contents=PROMPT)
+            # Si Gemini está saturado, lo intenta hasta 3 veces
+            for intento in range(3):
+                try:
+                    respuesta = cliente.models.generate_content(model=MODELO, contents=PROMPT)
+                    break
+                except Exception:
+                    if intento == 2:
+                        raise
+                    time.sleep(5)
         st.balloons()
         st.markdown(respuesta.text)
         st.caption("👀 Recomendación orientativa. Tu óptico te asesorará según tu graduación y medidas.")
