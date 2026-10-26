@@ -10,9 +10,9 @@ st.write(
     "y qué monturas te recomiendan en tu óptica. ¡Sin datos personales!"
 )
 
-# Modelo de Gemini (capa gratuita). Si da error de modelo, cámbialo
-# por el que aparezca en aistudio.google.com
-MODELO = "gemini-3.8-flash"
+# Modelos de Gemini (capa gratuita). Prueba el primero; si está
+# saturado o falla, pasa al siguiente de la lista.
+MODELOS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite"]
 
 # ---------- Las preguntas del test ----------
 cara = st.radio(
@@ -73,15 +73,15 @@ if st.button("✨ Descubrir mis gafas", type="primary"):
     try:
         cliente = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
         with st.spinner("Consultando al oráculo de las gafas... 🔮"):
-            # Si Gemini está saturado, lo intenta hasta 3 veces
-            for intento in range(3):
+            # Si un modelo está saturado, prueba el siguiente de la lista
+            for numero, modelo in enumerate(MODELOS):
                 try:
-                    respuesta = cliente.models.generate_content(model=MODELO, contents=PROMPT)
+                    respuesta = cliente.models.generate_content(model=modelo, contents=PROMPT)
                     break
                 except Exception:
-                    if intento == 2:
+                    if numero == len(MODELOS) - 1:
                         raise
-                    time.sleep(5)
+                    time.sleep(2)
         st.balloons()
         st.markdown(respuesta.text)
         st.caption("👀 Recomendación orientativa. Tu óptico te asesorará según tu graduación y medidas.")
