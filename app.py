@@ -11,7 +11,7 @@ st.write(
 
 # Modelo de Gemini (capa gratuita). Si da error de modelo, cámbialo
 # por el que aparezca en aistudio.google.com
-MODELO = "gemini-2.5-flash"
+MODELO = "gemini-3.8-flash"
 
 # ---------- Las preguntas del test ----------
 cara = st.radio(
