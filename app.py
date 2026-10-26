@@ -78,5 +78,7 @@ if st.button("✨ Descubrir mis gafas", type="primary"):
         st.caption("👀 Recomendación orientativa. Tu óptico te asesorará según tu graduación y medidas.")
     except KeyError:
         st.error("Falta la clave de Gemini en los secretos de la app.")
-    except Exception:
+    except Exception as error:
         st.error("El oráculo está descansando 😴. Espera un minuto y vuelve a intentarlo.")
+        with st.expander("Detalles técnicos (para quien lo arregle)"):
+            st.write(str(error))
